@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  selenium-headless
+
+  Sample SAM Template for selenium-headless
+
+Globals:
+  Function:
+    Timeout: 300
+Resources:
+  SelenumHeadlessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: function/selenium-headless/
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.7
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Layers:
+        - !Ref SeleniumLayer
+        - !Ref ChromedriverLayer
+  SeleniumLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: selenium Layer
+      ContentUri: layer/selenium.zip
+      CompatibleRuntimes:
+        - python3.7
+    Metadata:
+      BuildMethod: python3.7
+  ChromedriverLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: chrome driver Layer
+      ContentUri: layer/chromedriver.zip
+      CompatibleRuntimes:
+        - python3.7
+    Metadata:
+      BuildMethod: python3.7   

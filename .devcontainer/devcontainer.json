@@ -1,0 +1,43 @@
+{
+  "name": "selenium_python37",
+  "image": "mcr.microsoft.com/devcontainers/python:3.7-bullseye",
+  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+  "containerEnv": {
+    "TZ": "Asia/Tokyo"
+  },
+  "runArgs": ["--init"],
+  "features": {
+    "aws-cli": "latest",
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/docker-from-docker:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.renderWhitespace": "all",
+        "[json][jsonc]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": true
+          }
+        }
+      },
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "donjayamanne.python-extension-pack",
+        "njpwerner.autodocstring",
+        "KevinRose.vsc-python-indent",
+        "amazonwebservices.aws-toolkit-vscode"
+      ]
+    }
+  },
+  "remoteUser": "vscode",
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "postCreateCommand": "chmod +x ./.devcontainer/postCreateCommand.sh && ./.devcontainer/postCreateCommand.sh"
+}

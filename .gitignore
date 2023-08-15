@@ -1,0 +1,5 @@
+.font*
+.env
+.env/*
+*.zip
+IPAexfont00401*
