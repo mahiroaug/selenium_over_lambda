@@ -3,3 +3,4 @@
 .env/*
 *.zip
 IPAexfont00401*
+python/bin/*
