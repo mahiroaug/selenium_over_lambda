@@ -4,3 +4,5 @@
 *.zip
 IPAexfont00401*
 python/bin/*
+*.cf
+mymodule/lambda_function.py
