@@ -45,6 +45,10 @@ def lambda_handler(event, context):
     URL = generate_url(validators)
     print("URL: ",URL)
 
+    #get date
+    current = datetime.datetime.now()
+    current_formed = current.strftime('%Y-%m-%d') 
+    
     
     ### HEADLESS BROWSER(selenium) ########################
     browser = webdriver.Chrome(
@@ -66,7 +70,7 @@ def lambda_handler(event, context):
     browser.save_screenshot(file_name)
     
     ### put S3
-    full_key = key + "/png/" + "validators_tax_table.png"
+    full_key = f"{key}/png/validators_tax_table_{current_formed}.png"
     s3client.upload_file(Filename=file_name,
                         Bucket=bucket_publicaccess,
                         Key=full_key)
@@ -108,18 +112,16 @@ def lambda_handler(event, context):
     browser.close()
     #browser.quit()
     
-    #get date
-    current = datetime.datetime.now()
-    current_formed = current.strftime('%Y/%m/%d') 
+
 
     attachments = [
         {
-            "pretext": "<!channel> " + current_formed + "時点の日次レポートミャク〜",
+            "pretext": f"<!channel> ({current_formed}現在) 今月の日次レポートミャク〜",
             "color": "#FFA500",
             "author_name": "beaconcha.in - Mainnet",
             "title": info,
             "title_link": URL,
-            "text": "(メモ)beaconcha.in基準のCL報酬となります。掲載は1~2日遅れになるようです。",
+            "text": "beaconcha.in視点のCL報酬となります。掲載は1~2日遅れになるようです～",
             "image_url": image_url,
             "footer": "powered by headless-chromium",
             "ts": int(time.time())

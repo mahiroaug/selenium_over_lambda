@@ -13,7 +13,7 @@ Resources:
                     VALIDATORS_INFO: "" ### confidential
                     S3BUCKET: "" ### confidential
                     S3BUCKET_PUBLICACCESS: "" ### confidential
-                    S3KEY: "ValidatorTaxTable-dev"
+                    S3KEY: "ValidatorTaxTable-dev" ### confidential
             FunctionName: "web3-selenium-headless-dev"
             Handler: "lambda_function.lambda_handler"
             Architectures: 

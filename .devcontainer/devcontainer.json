@@ -28,13 +28,14 @@
         }
       },
       "extensions": [
-        "esbenp.prettier-vscode",
-        "ms-python.python",
-        "donjayamanne.python-extension-pack",
-        "njpwerner.autodocstring",
-        "KevinRose.vsc-python-indent",
-        "amazonwebservices.aws-toolkit-vscode"
-      ]
+		"esbenp.prettier-vscode",
+		"ms-python.python",
+		"donjayamanne.python-extension-pack",
+		"njpwerner.autodocstring",
+		"KevinRose.vsc-python-indent",
+		"amazonwebservices.aws-toolkit-vscode",
+		"redhat.vscode-yaml"
+	]
     }
   },
   "remoteUser": "vscode",
