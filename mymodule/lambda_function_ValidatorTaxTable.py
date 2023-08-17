@@ -5,6 +5,7 @@ import os
 import time
 import datetime
 import glob
+import json
 from pathlib import Path
 
 def lambda_handler(event, context):
@@ -33,11 +34,14 @@ def lambda_handler(event, context):
 
     ### s3 setting
     bucket = os.environ.get("S3BUCKET", "")
+    bucket_publicaccess = os.environ.get("S3BUCKET_PUBLICACCESS")
     key = os.environ.get("S3KEY")
-    s3 = boto3.client('s3')
+    s3client = boto3.client('s3')
+    s3resource = boto3.resource('s3')
     
     ### env setting
     validators = os.environ.get("VALIDATORS")
+    info = os.environ.get("VALIDATORS_INFO")
     URL = generate_url(validators)
     print("URL: ",URL)
 
@@ -58,17 +62,24 @@ def lambda_handler(event, context):
     time.sleep(10)
     
     ### get screenshot ###########################
-    browser.save_screenshot("/tmp/shot.png")
+    file_name = "/tmp/shot.png"
+    browser.save_screenshot(file_name)
     
     ### put S3
-    s3.upload_file(Filename="/tmp/shot.png",
-                Bucket=bucket,
-                Key=key + "/" + "validators_tax_table.png")
-    s3.put_object(ACL='private',
+    full_key = key + "/png/" + "validators_tax_table.png"
+    s3client.upload_file(Filename=file_name,
+                        Bucket=bucket_publicaccess,
+                        Key=full_key)
+    image_url = f"https://{bucket_publicaccess}.s3.ap-northeast-1.amazonaws.com/{full_key}"
+    
+    '''
+    s3client.put_object(ACL='private',
                 Bucket=bucket,
                 Body=URL,
-                Key=key + "/" + "URL.txt",
+                Key=key + "/URL/" + "URL.txt",
                 ContentType='text/plain')
+    '''
+    
     
     '''
     ### get CSV
@@ -85,7 +96,7 @@ def lambda_handler(event, context):
         download_fileName2 = glob.glob(f'/tmp/*')    
         print("download_filename2: ",download_fileName2)
             
-        s3.upload_file(Filename=download_fileName,
+        s3client.upload_file(Filename=download_fileName,
                     Bucket=bucket,
                     Key="csv/" + "csv001.csv")
     else:
@@ -96,6 +107,47 @@ def lambda_handler(event, context):
     ### close ##########################################
     browser.close()
     #browser.quit()
+    
+    #get date
+    current = datetime.datetime.now()
+    current_formed = current.strftime('%Y/%m/%d') 
+
+    attachments = [
+        {
+            "pretext": "<!channel> " + current_formed + "時点の日次レポートミャク〜",
+            "color": "#FFA500",
+            "author_name": "beaconcha.in - Mainnet",
+            "title": info,
+            "title_link": URL,
+            "text": "(メモ)beaconcha.in基準のCL報酬となります。掲載は1~2日遅れになるようです。",
+            "image_url": image_url,
+            "footer": "powered by headless-chromium",
+            "ts": int(time.time())
+        }
+    ]
+    
+    attachments_json = json.dumps(attachments).encode('utf-8')
+
+    # push bucket
+    
+    '''
+    bucket_source = s3resource.Bucket(bucket)
+    bucket_source.put_object(ACL='private',
+                            Body=attachments_json,
+                            Key=key + "/json/" + "attachments" + ".json",
+                            ContentType='application/json'
+                            )
+    '''
+
+    s3client.put_object(
+                        Bucket=bucket,
+                        ACL='private',
+                        Body=attachments_json,
+                        Key=key + "/json/" + "attachments" + ".json",
+                        ContentType='application/json'
+                        )
+
+
 
     return title
 

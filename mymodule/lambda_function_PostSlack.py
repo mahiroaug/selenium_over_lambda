@@ -29,7 +29,7 @@ def lambda_handler(event, context):
     
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
-    messageid = key.split("/")[1] # key sample [screenshot-dev/********] 
+    messageid = key.split("/")[2] # key sample [KEY/json/********] 
     
     print("bucket: ", bucket)
     print("key :",key)
